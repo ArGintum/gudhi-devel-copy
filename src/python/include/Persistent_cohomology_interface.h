@@ -5,6 +5,7 @@
  *    Copyright (C) 2016 Inria
  *
  *    Modification(s):
+ *      - 2024/02 Eduard Tulchinskii: option to limit computations to lower homology groups only 
  *      - YYYY/MM Author: Description of the modification
  */
 
@@ -46,8 +47,8 @@ persistent_cohomology::Persistent_cohomology<FilteredComplex, persistent_cohomol
   };
 
  public:
-  Persistent_cohomology_interface(FilteredComplex* stptr, bool persistence_dim_max=false)
-      : Base(*stptr, persistence_dim_max),
+  Persistent_cohomology_interface(FilteredComplex* stptr, bool persistence_dim_max=false, int dim_max_override_ = -1)
+      : Base(*stptr, persistence_dim_max, dim_max_override_),
         stptr_(stptr) { }
 
   // TODO: move to the constructors?
