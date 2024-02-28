@@ -5,6 +5,7 @@
  *    Copyright (C) 2014 Inria
  *
  *    Modification(s):
+ *      - 2024/02 Eduard Tulchisnkii: added early stop to limit computationts to lower (co)homology groups only
  *      - YYYY/MM Author: Description of the modification
  */
 
@@ -92,9 +93,12 @@ class Persistent_cohomology {
    * @param[in] persistence_dim_max if true, the persistent homology for the maximal dimension in the
    *                                complex is computed. If false, it is ignored. Default is false.
    *
+   * @dim_max_override_[in] if provided states the maximal dimension of the simplex to be computed.
+   *
+   *
    * @exception std::out_of_range In case the number of simplices is more than Simplex_key type numeric limit.
    */
-  explicit Persistent_cohomology(FilteredComplex& cpx, bool persistence_dim_max = false)
+  explicit Persistent_cohomology(FilteredComplex& cpx, bool persistence_dim_max = false, int dim_max_override_ = -1)
       : cpx_(&cpx),
         dim_max_(cpx.dimension()),                       // upper bound on the dimension of the simplices
         coeff_field_(),                                  // initialize the field coefficient structure.
@@ -117,6 +121,9 @@ class Persistent_cohomology {
     if (persistence_dim_max) {
       ++dim_max_;
     }
+	if (dim_max_override_ >= 0) {
+	  dim_max_ = dim_max_override_ + 1;
+	}
   }
 
   ~Persistent_cohomology() {
