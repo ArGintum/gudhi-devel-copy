@@ -1,4 +1,10 @@
 
+# Modifications
+
+28/02/2024 - added the option to limit Cubical Persistence computations to only first ```max_dim``` homology groups (speed-up needed for some project)
+            Example: ```gudhi.CubicalComplex(..., max_dim=1)''' - limits computations to groups ```H_0, H_1'''
+           - plans for further improvement of the persistence homology performance for cubical complexes
+
 [![OSx and Win on Azure](https://dev.azure.com/GUDHI/gudhi-devel/_apis/build/status/GUDHI.gudhi-devel?branchName=master)](https://dev.azure.com/GUDHI/gudhi-devel/_build/latest?definitionId=1&branchName=master)
 [![Linux on CircleCI](https://circleci.com/gh/GUDHI/gudhi-devel/tree/master.svg?style=svg)](https://circleci.com/gh/GUDHI/gudhi-devel/tree/master)
 [![Anaconda Cloud](https://anaconda.org/conda-forge/gudhi/badges/version.svg)](https://anaconda.org/conda-forge/gudhi)
