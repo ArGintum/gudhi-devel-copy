@@ -5,6 +5,7 @@
  *    Copyright (C) 2015 Inria
  *
  *    Modification(s):
+ *      - 2024/02 Eduard Tulchinskii: added early stop to limit computations to lower homology groups only
  *      - YYYY/MM Author: Description of the modification
  */
 
