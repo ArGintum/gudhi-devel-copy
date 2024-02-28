@@ -7,6 +7,7 @@
 # Copyright (C) 2016 Inria
 #
 # Modification(s):
+#   - 2024/02 Eduard Tulchinskii: added option to limit computations to lower homology groups only
 #   - YYYY/MM Author: Description of the modification
 
 from __future__ import print_function
@@ -39,7 +40,7 @@ cdef extern from "Cubical_complex_interface.h" namespace "Gudhi":
 
 cdef extern from "Persistent_cohomology_interface.h" namespace "Gudhi":
     cdef cppclass Cubical_complex_persistence_interface "Gudhi::Persistent_cohomology_interface<Gudhi::Cubical_complex::Cubical_complex_interface>":
-        Cubical_complex_persistence_interface(Bitmap_cubical_complex_interface * st, bool persistence_dim_max) nogil
+        Cubical_complex_persistence_interface(Bitmap_cubical_complex_interface * st, bool persistence_dim_max, int dim_max_override_) nogil
         void compute_persistence(int homology_coeff_field, double min_persistence) nogil except +
         vector[pair[int, pair[double, double]]] get_persistence() nogil
         vector[vector[int]] cofaces_of_cubical_persistence_pairs() nogil
@@ -57,9 +58,10 @@ cdef class CubicalComplex:
     cdef Bitmap_cubical_complex_interface * thisptr
     cdef Cubical_complex_persistence_interface * pcohptr
     cdef bool _built_from_vertices
+    cdef int _max_group
 
     # Fake constructor that does nothing but documenting the constructor
-    def __init__(self, *, top_dimensional_cells=None, vertices=None, dimensions=None, perseus_file=''):
+    def __init__(self, *, top_dimensional_cells=None, vertices=None, dimensions=None, perseus_file='', max_group = -1):
         """CubicalComplex constructor from the filtration values of either
         the top-dimensional cells, or the vertices.
 
@@ -100,9 +102,10 @@ cdef class CubicalComplex:
         """
 
     # The real cython constructor
-    def __cinit__(self, *, top_dimensional_cells=None, vertices=None, dimensions=None, perseus_file=''):
+    def __cinit__(self, *, top_dimensional_cells=None, vertices=None, dimensions=None, perseus_file='', max_group = -1):
         cdef const char* file
         self._built_from_vertices = False
+        self._max_group = max_group
         if perseus_file:
             if top_dimensional_cells is not None or vertices is not None or dimensions is not None:
                 raise ValueError("The Perseus file contains all the information, do not specify anything else")
@@ -213,7 +216,7 @@ cdef class CubicalComplex:
         cdef int field = homology_coeff_field
         cdef double minp = min_persistence
         with nogil:
-            self.pcohptr = new Cubical_complex_persistence_interface(self.thisptr, 1)
+            self.pcohptr = new Cubical_complex_persistence_interface(self.thisptr, 1, self._max_group)
             self.pcohptr.compute_persistence(field, minp)
 
     def persistence(self, homology_coeff_field=11, min_persistence=0):
